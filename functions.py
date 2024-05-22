@@ -19,10 +19,19 @@ def preproccesing(array, l):
     return solutions
 
 
-# def first_solution(array,n):
-#     i = array[random.randint(0,len(array))]
-#     for i in array:
-#         if
+
+
+def deletethesame(array):
+    for i in range(len(array) - 1, -1, -1):
+        for j in range(len(array) - 1, -1, -1):
+            if i != j:
+                if array[i][0] == array[j][0] and array[i][-1] == array[j][-1]:
+                    # print(processeddata[i],"|||||||",processeddata[j])
+                    # print(i,"||||",j)
+                    del array[i]
+                    i -= 1
+    return array
+
 
 
 
