@@ -18,6 +18,29 @@ def preproccesing(array, l):
                     helpvaluedown = j
     return solutions
 
+def joinwords(indexarray,array,l):
+    newarray =  [[] for _ in range(len(indexarray))]
+    arraylen = len(indexarray)
+    for i in range(arraylen):
+        # print(array[indexarray[i][0]])
+        # print(array[indexarray[i][1]])
+        stringofthearray = ''
+        maxlen = len(indexarray[i])-1
+        for j in range(maxlen + l-1):
+            k = 1
+            print(maxlen,"maxlen",j,"j")
+            if j >= maxlen:
+                # print((array[indexarray[i][maxlen]][k]))
+                newarray[i].append(array[indexarray[i][maxlen]][k])
+                k+=1
+            else:
+                # print(indexarray[i])
+                # print(array[indexarray[i][j]][0])
+                newarray[i].append(array[indexarray[i][j]][0])
+
+    return newarray
+
+
 
 
 
@@ -128,3 +151,7 @@ def openfile(file_path):
     with open(file_path, 'r') as file:
         lines = file.read().splitlines()
         return lines
+
+
+
+
