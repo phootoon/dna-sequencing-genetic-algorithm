@@ -1,39 +1,58 @@
 import functions
+import time
 
-# Parameters for the genetic algorithm
-POPULATION_SIZE = 100
-GENERATIONS = 200
-MUTATION_RATE = 0.05
-DNA_WORD_LENGTH = 10
-TARGET_LENGTH = 206
+# Parameters for the genetic algorithm and DNA sequence generation
+POPULATION_SIZE = 200
+GENERATIONS = 500
+MUTATION_RATE = 0.1
+DNA_WORD_LENGTH = 6
+TARGET_LENGTH = 509
 
-# Read and preprocess the data
+# Parameters for file reading
+FILE_PATH = 'data.txt'
+
 if __name__ == '__main__':
-    file_path = 'data.txt'
-    data = functions.openfile(file_path)
-    processeddata = functions.preprocess_spectrum(data, DNA_WORD_LENGTH)
-    print(len(processeddata))
+    average_coverage = 0.0
+    average_execution_time = 0.0
+    repetitions = 10
+    help_variable = 0
+    max_val = float('-inf')  # Initialize to negative infinity to handle negative numbers
+    min_val = float('inf')
+    # Read DNA words from the file
+    resoults = [[] for _ in range(repetitions)]
+    for i in range(repetitions):
+        generated_data = functions.openfile(FILE_PATH)
 
-    # Run the genetic algorithm
-    def genetic_algorithm():
-        population = functions.create_population(processeddata, POPULATION_SIZE, TARGET_LENGTH)
-        for generation in range(GENERATIONS):
-            parents = functions.select_parents(population, TARGET_LENGTH, DNA_WORD_LENGTH)
-            offspring = []
-            for i in range(0, len(parents), 2):
-                if i + 1 < len(parents):
-                    child1, child2 = functions.crossover(parents[i], parents[i + 1], TARGET_LENGTH)
-                    offspring.append(functions.mutate(child1, MUTATION_RATE, processeddata, TARGET_LENGTH))
-                    offspring.append(functions.mutate(child2, MUTATION_RATE, processeddata, TARGET_LENGTH))
-            population = parents + offspring
-            best_sequence = max(population, key=lambda x: functions.fitness(''.join(x), TARGET_LENGTH, DNA_WORD_LENGTH))
-            best_fitness = functions.fitness(''.join(best_sequence), TARGET_LENGTH, DNA_WORD_LENGTH)
-            print(f"Generation {generation}: Best Fitness = {best_fitness}")
-        return best_sequence
+        # Test the genetic algorithm with the generated data
+        best_sequence_str, execution_time, coverage_percentage = functions.test_genetic_algorithm(
+            generated_data,
+            POPULATION_SIZE,
+            GENERATIONS,
+            MUTATION_RATE,
+            TARGET_LENGTH,
+            DNA_WORD_LENGTH
+        )
 
-    # Get the best sequence
-    best_sequence = genetic_algorithm()
-    best_sequence_str = ''.join(best_sequence)
-    print("Best Sequence:", best_sequence_str)
-    print("Best Sequence Length:", len(best_sequence_str))
-    print("Indexes of words in best sequence:", [processeddata.index(word) for word in best_sequence])
+        print(f"Best Sequence: {best_sequence_str}")
+        print(f"Execution Time: {execution_time} seconds")
+        print(f"Coverage Percentage: {coverage_percentage}%")
+        resoults[i].append(coverage_percentage)
+        resoults[i].append(execution_time)
+
+    for i in range(repetitions):
+        # Update maximum value
+        help_variable = resoults[i][0]
+        if help_variable > max_val:
+            max_val = help_variable
+        if help_variable < min_val:
+            min_val = help_variable
+        average_coverage += help_variable
+        average_execution_time += resoults[i][1]
+    average_coverage = average_coverage/repetitions
+    average_execution_time = average_execution_time/repetitions
+
+        # Update minimum value
+    print(average_coverage)
+    print(average_execution_time)
+    print(max_val)
+    print(min_val)
